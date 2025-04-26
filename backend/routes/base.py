@@ -2,6 +2,11 @@ from fastapi import FastAPI, Depends
 from db import Base, engine, get_db
 from sqlalchemy.orm import Session
 from models.users import User
+from models.contact_book import (
+    ContactBook,
+    ContactBookRegisterSchemma,
+    ContactBookUpdatesSchemma,
+)
 
 Base.metadata.create_all(bind=engine)
 
@@ -47,3 +52,37 @@ def login(form_data: UserLoginSchemma, db: Session = Depends(get_db)):
         return {"message": "ok", "user": exist}
 
     return {"message": "login fail invalid password"}
+
+
+@app.post("/register-contact")
+def register_contact(
+    form_data: ContactBookRegisterSchemma, db: Session = Depends(get_db)
+):
+    contactbook = ContactBook(
+        name=form_data.name,
+        country_name=form_data.country_name,
+        phone_number=form_data.phone_number,
+        address=form_data.address,
+    )
+    db.add(contactbook)
+    db.commit()
+    db.refresh(contactbook)
+    return contactbook
+
+
+@app.put("/update-contact/{id}")
+def update_contact(
+    id: int, form_data: ContactBookUpdatesSchemma, db: Session = Depends(get_db)
+):
+    exist = db.query(ContactBook).filter(ContactBook.id == id).first()
+
+    if exist is None:
+        return {"message": "contact not found"}
+
+    exist.name = form_data.name
+    exist.country_name = form_data.country_name
+    exist.phone_number = form_data.phone_number
+    exist.address = form_data.address
+
+    db.commit()
+    return {"message": "updated successsfulluy"}

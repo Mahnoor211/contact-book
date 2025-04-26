@@ -33,79 +33,86 @@ def run_around_test():
     Base.metadata.create_all(bind=engine)
     yield
     Base.metadata.drop_all(bind=engine)
-    
+
+
 def test_register_user_success():
-    response = client.post("/register", json = {
-        "name": "nobita",
-        "email":"nobita543@gmail.com",
-        "password":"gadgets"
-    })
-    
+    response = client.post(
+        "/register",
+        json={"name": "nobita", "email": "nobita543@gmail.com", "password": "gadgets"},
+    )
+
     assert response.status_code == 200
-    data=response.json()
-    assert data["name"]=="nobita"
-    assert data["email"]=="nobita543@gmail.com"
-    
+    data = response.json()
+    assert data["name"] == "nobita"
+    assert data["email"] == "nobita543@gmail.com"
+
+
 def test_register_user_no_name():
-    response = client.post("/register", json = {
-        "email":"nobita543@gmail.com",
-        "password":"gadgets"
-    })
-    
+    response = client.post(
+        "/register", json={"email": "nobita543@gmail.com", "password": "gadgets"}
+    )
+
     assert response.status_code == 422
-    
+
+
 def test_register_user_no_email():
-    response = client.post("/register", json = {
-        "name": "nobita",
-        "password":"gadgets"
-    })
-    
+    response = client.post("/register", json={"name": "nobita", "password": "gadgets"})
+
     assert response.status_code == 422
-    
+
+
 def test_register_user_no_password():
-    response = client.post("/register", json = {
-        "name": "nobita",
-        "email":"nobita543@gmail.com",
-    })
-    
+    response = client.post(
+        "/register",
+        json={
+            "name": "nobita",
+            "email": "nobita543@gmail.com",
+        },
+    )
+
     assert response.status_code == 422
-    
+
+
 def test_register_user_no_data():
     response = client.post("/register")
-    
+
     assert response.status_code == 422
-    
+
+
 def test_register_user_invalid_email():
-    response = client.post("/register", json = {
-        "name": "nobita",
-        "email": "invalid email address",
-        "password":"gadgets"
-    })
-    
-    
+    response = client.post(
+        "/register",
+        json={
+            "name": "nobita",
+            "email": "invalid email address",
+            "password": "gadgets",
+        },
+    )
+
+
 def test_login_user_success():
-    response = client.post("/login", json = {
-        "email":"nobita543@gmail.com",
-        "password":"gadgets"
-    })
-    
+    response = client.post(
+        "/login", json={"email": "nobita543@gmail.com", "password": "gadgets"}
+    )
+
     assert response.status_code == 200
-    
+
+
 def test_login_user_no_email():
-    response = client.post("/login", json = {
-        "password":"gadgets"
-    })
-    
+    response = client.post("/login", json={"password": "gadgets"})
+
     assert response.status_code == 422
-    
+
+
 def test_login_user_no_password():
-    response = client.post("/login", json = {
-        "email": "nobita543@gmail.com"
-    })
-    
+    response = client.post("/login", json={"email": "nobita543@gmail.com"})
+
     assert response.status_code == 422
-    
+
+
 def test_login_user_no_data():
-    response = client.post("/login",)
-    
+    response = client.post(
+        "/login",
+    )
+
     assert response.status_code == 422
