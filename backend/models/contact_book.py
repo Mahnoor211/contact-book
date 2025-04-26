@@ -23,3 +23,10 @@ class ContactBookRegisterSchemma(BaseModel):
 
 class ContactBookUpdatesSchemma(ContactBookRegisterSchemma):
     pass
+
+
+class ContactBookPartialUpdateSchemma(BaseModel):
+    name: str | None = None
+    country_name: str | None = None
+    phone_number: str | None = None
+    address: str | None = None
